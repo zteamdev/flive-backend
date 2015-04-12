@@ -17,6 +17,8 @@ module.exports = function (app) {
   app.post('/flight', flight.saveFlight);
   app.get('/flights/:number/:airline', flight.findFlightByNumberAndAirline);
 
+  app.get('/messages/delete', message.deleteMessages);
+
   app.post('/media/upload', multipartMiddleware, media.upload);
 
 }
