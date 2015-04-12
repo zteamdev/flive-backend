@@ -1,8 +1,9 @@
-var db = require('../lib/db');
+var db = require('../lib/db')
+  , channelModel = require('../lib/channel-model')
 
 module.exports.findChannels = function (request, response) {
 	
-  db.findChannels(function (err, results) {
+  channelModel.findChannels(function (err, results) {
     if (err) {
       response.end(JSON.stringify({
         success: false,
@@ -22,10 +23,11 @@ module.exports.findChannels = function (request, response) {
 
 module.exports.saveChannel = function (request, response) {
 
-  db.saveChannel({
+  channelModel.saveChannel({
       type: request.param('type'),
       user: request.param('username'),
       flight: request.param('flight'),
+      created_at: r.now()
     },
     function(err, saved) {
       if(err) {

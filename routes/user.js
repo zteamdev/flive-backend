@@ -1,4 +1,5 @@
 var db = require('../lib/db')
+  , userModel = require('../lib/user-model')
   , bcrypt = require('bcrypt');
 
 module.exports.saveUser = function (request, response) {
@@ -16,10 +17,11 @@ module.exports.saveUser = function (request, response) {
     }));
   }
 	
-  db.saveUser({
+  userModel.saveUser({
       username: request.param('username'),
       password: bcrypt.hashSync(request.param('password'), 8),
-      name: request.param('name')
+      name: request.param('name'),
+      created_at: r.now()
     },
     function(err, saved) {
       if(err) {
@@ -49,12 +51,13 @@ module.exports.findUserByUsername = function (request, response) {
  
   var username = request.params.username;
   
-  db.findUsersByUsername(username, function (err, user) {
+  userModel.findUsersByUsername(username, function (err, user) {
     
     if(err) {
       response.end(JSON.stringify({
         error: 'Sorry, but something went wrong'
       }));
+      console.log(err)
       return;
     }
     
