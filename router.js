@@ -2,6 +2,7 @@ var channel = require('./routes/channel')
   , user = require('./routes/user')
   , flight = require('./routes/flight')
   , media = require('./routes/media')
+  , message = require('./routes/message')
   , multipart = require('connect-multiparty')
   , multipartMiddleware = multipart();
 
