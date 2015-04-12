@@ -1,5 +1,6 @@
 var db = require('../lib/db')
   , channelModel = require('../lib/channel-model')
+  , flightModel = require('../lib/flight-model');
 
 module.exports.findChannels = function (request, response) {
 	
@@ -9,13 +10,13 @@ module.exports.findChannels = function (request, response) {
         success: false,
         channels: []
       }));
+      return;
     } else {
-      if (results.length > 0) {
-        response.end(JSON.stringify({
-          success: true,
-          channels: results
-        }));
-      }
+      response.end(JSON.stringify({
+        success: true,
+        channels: results
+      }));
+      return;
     }
   });
 	
@@ -23,10 +24,14 @@ module.exports.findChannels = function (request, response) {
 
 module.exports.saveChannel = function (request, response) {
 
+  var type = request.param('type');
+  var username = request.param('username');
+  var flight = request.param('flight');
+
   channelModel.saveChannel({
-      type: request.param('type'),
-      user: request.param('username'),
-      flight: request.param('flight'),
+      type: type,
+      user: username,
+      flight: flight,
       created_at: r.now()
     },
     function(err, saved) {
@@ -50,4 +55,5 @@ module.exports.saveChannel = function (request, response) {
       return;
     }
   );
+  
 }

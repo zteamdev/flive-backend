@@ -23,7 +23,7 @@ module.exports.saveUser = function (request, response) {
       name: request.param('name'),
       created_at: r.now()
     },
-    function(err, saved) {
+    function (err, saved) {
       if(err) {
         response.end(JSON.stringify({
           success: false,
