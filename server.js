@@ -6,7 +6,7 @@ var express = require('express')
   , multer = require('multer')
   , db = require('./lib/db')
   , router = require('./router')
-  , done = false;
+  , messageModel = require('./lib/message-model')
 
 app.configure(function() {
 
@@ -29,8 +29,11 @@ var usersonline = {};
 
 io.sockets.on('connection', function (socket) {
 
-  var connectedUser = {};
-  console.log(socket.id);
+  messageModel.findMessages(20, function (err, messages) {
+    if (!err && messages.length > 0) {
+      socket.emit('history', messages);
+    }
+  });
 
   socket.on('message', function (data) {
     var msg = {
@@ -39,8 +42,16 @@ io.sockets.on('connection', function (socket) {
       photo: data.photo,
       timestamp: new Date().getTime()
     }
-    socket.emit('new message', msg);
-    socket.broadcast.emit('new message', msg);
+
+    messageModel.saveMessage(msg, function (err, saved) {
+      if(err || !saved) {
+        socket.emit('new message', {message: util.format("<em>There was an error saving your message (%s)</em>", msg.message), from: msg.from, timestamp: msg.timestamp});
+        return;
+      }
+      socket.emit('new message', msg);
+      socket.broadcast.emit('new message', msg);
+    });  
+
   });
 
 });
